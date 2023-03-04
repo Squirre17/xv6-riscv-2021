@@ -1,0 +1,3 @@
+file ./kernel/kernel
+set arch riscv
+gef-remote --qemu-user --qemu-binary ./kernel/kernel localhost 26000
