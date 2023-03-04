@@ -99,6 +99,12 @@ sys_uptime(void)
 uint64
 sys_trace(void) 
 {
-    printf("sys_trace: hit\n");
+    uint32 mask;
+    if(argint(0, (int *)&mask) < 0) 
+        return -1;
+    
+
+
+    printf("[D] sys_trace: hit with mask %d\n", mask);
     return 0;
 }
