@@ -106,7 +106,5 @@ sys_trace(void)
     struct proc *p = myproc();
     p->trace_mask = mask;
 
-
-    printf("[D] sys_trace: hit with mask %d\n", mask);
     return 0;
 }
