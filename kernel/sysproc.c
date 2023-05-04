@@ -108,3 +108,10 @@ sys_trace(void)
 
     return 0;
 }
+
+uint64
+sys_sysinfo()
+{
+    printf("Hi sysinfo\n");
+    return 0;
+}
