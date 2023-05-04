@@ -83,7 +83,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
   if(va >= MAXVA)
     panic("walk");
 
-  for(int level = 2; level > 0; level--) {
+  for(int level = 2; level > 0; level--) { /* 对页表迭代三次 */
     pte_t *pte = &pagetable[PX(level, va)];
     if(*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
@@ -477,4 +477,31 @@ void vmprint(pagetable_t pagetable, uint32 level) {/* pagetable 指向页表的�
 
     }
   }
+}
+
+/// @brief judge a page whether accessed by va
+/// @param pgtbl : page table
+/// @param va    : virtual address
+/// @return      : 1 if accessed else 0
+uint64 vmpg_is_access(pagetable_t pgtbl, uint64 va) {
+  pte_t *pte; /* *pte = paddr */
+  uint64 pa;
+
+  if(va > MAXVA)
+    return 0;
+
+  const int need_alloc = 0;
+  if((pte = walk(pgtbl, va, need_alloc)) == 0)
+    return 0;
+
+  if((*pte & PTE_V) == 0)
+    return 0;
+  
+  if((*pte & PTE_A) == 0) /* PTE_A is set by hardware */
+  {
+    *pte &= ~PTE_A; /* clear access bit */
+    return 1;
+  }
+
+  return 0;
 }

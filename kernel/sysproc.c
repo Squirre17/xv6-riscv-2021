@@ -96,10 +96,16 @@ sys_pgaccess(void)
   
   if(len < 0 || len > 32)
     return -1;
-    
-  uint64 bitmask;// TODO
 
+  uint64 bitmask;// TODO
   struct proc *p = myproc();
+
+  for(uint32 i = 0; i < len; i++) {
+    uint64 va = base + i * PGSIZE;
+
+
+  }
+
   if(copyout(p->pagetable, mask, (char *)&bitmask, sizeof(bitmask)) < 0)
     return -1;
 
