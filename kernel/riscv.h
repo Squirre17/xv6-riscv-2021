@@ -364,3 +364,6 @@ sfence_vma()
 
 typedef uint64 pte_t;
 typedef uint64 *pagetable_t; // 512 PTEs
+
+#define PAGE_DIR_BITS 9
+#define PAGE_DIR_SIZE (1 << PAGE_DIR_BITS)

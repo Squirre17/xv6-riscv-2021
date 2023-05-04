@@ -432,3 +432,49 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+/*
+  Define a function called vmprint(). It should take a pagetable_t argument, 
+  and print that pagetable in the format described below. 
+
+  page table 0x0000000087f6e000
+  ..0: pte 0x0000000021fda801 pa 0x0000000087f6a000
+  .. ..0: pte 0x0000000021fda401 pa 0x0000000087f69000
+  .. .. ..0: pte 0x0000000021fdac1f pa 0x0000000087f6b000
+  .. .. ..1: pte 0x0000000021fda00f pa 0x0000000087f68000
+  .. .. ..2: pte 0x0000000021fd9c1f pa 0x0000000087f67000
+  ..255: pte 0x0000000021fdb401 pa 0x0000000087f6d000
+  .. ..511: pte 0x0000000021fdb001 pa 0x0000000087f6c000
+  .. .. ..510: pte 0x0000000021fdd807 pa 0x0000000087f76000
+  .. .. ..511: pte 0x0000000020001c0b pa 0x0000000080007000
+  
+  Insert if(p->pid==1) vmprint(p->pagetable) in exec.c just before the return argc, 
+  to print the first process's page table. You receive full credit for this assignment 
+  if you pass the pte printout test of make grade.
+*/
+void vmprint(pagetable_t pagetable, uint32 level) {/* pagetable 指向页表的开头 */
+
+  if(level == 0) 
+    printf("page table %p\n", pagetable);
+    
+  for(uint32 i = 0; i < PAGE_DIR_SIZE; i++) {/* scan PTE for current page table */
+
+    pte_t pte = pagetable[i];
+
+    if(PTE_FLAGS(pte) & PTE_V) { /* if valid */
+
+      uint64 pa = PTE2PA(pte);
+      printf("..");
+
+      for(uint32 j = 0; j < level; j++) {
+        printf(" ..");
+      }
+
+      printf("%d: pte %p pa %p\n", i, pte, pa);
+
+      if((PTE_FLAGS(pte) & (PTE_R | PTE_W | PTE_X)) == 0) /* repr that this is not last page table */
+        vmprint((pagetable_t)pa, level + 1);
+
+    }
+  }
+}
