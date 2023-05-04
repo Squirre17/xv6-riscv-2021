@@ -7,7 +7,7 @@
 volatile static int started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.
-#define LAB_PGTBL 1
+// #define LAB_PGTBL 1
 void
 main()
 {

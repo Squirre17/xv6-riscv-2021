@@ -107,9 +107,9 @@ extern uint64 sys_uptime(void);
 #ifdef LAB_NET
 extern uint64 sys_connect(void);
 #endif
-#ifdef LAB_PGTBL
+// #ifdef LAB_PGTBL
 extern uint64 sys_pgaccess(void);
-#endif
+// #endif
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
