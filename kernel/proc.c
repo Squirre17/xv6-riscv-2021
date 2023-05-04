@@ -658,3 +658,23 @@ procdump(void)
     printf("\n");
   }
 }
+
+/// get number of processor
+uint64 get_nproc(void)
+{
+    struct proc *p;
+    uint64 counter = 0;
+
+    for(p = proc; p < &proc[NPROC]; p++) {
+
+        acquire(&p->lock);
+
+        if(p->state == UNUSED)
+            counter++;
+
+        release(&p->lock);
+
+    }
+
+    return counter;
+}

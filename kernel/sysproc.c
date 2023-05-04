@@ -6,6 +6,10 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
+
+extern uint64 get_freemem();
+extern uint64 get_nproc(void);
 
 uint64
 sys_exit(void)
@@ -109,9 +113,25 @@ sys_trace(void)
     return 0;
 }
 
+/* 
+传入一个用户指针 通过argaddr获取这个指针 把sysinfo这个结构体拷贝进这个指针中
+*/
 uint64
 sys_sysinfo()
 {
-    printf("Hi sysinfo\n");
+    struct sysinfo sinfo;
+
+    struct proc *p = myproc();
+    uint64 user_addr;
+
+    sinfo.freemem = get_freemem();
+    sinfo.nproc   = get_nproc();
+
+    if(argaddr(0, &user_addr) < 0)
+        return -1;
+
+    if(copyout(p->pagetable, user_addr, (char *)&sinfo, sizeof(sinfo)) < 0)
+        return -1;
+
     return 0;
 }
