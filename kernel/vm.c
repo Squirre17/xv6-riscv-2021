@@ -493,8 +493,8 @@ uint64 vmpg_is_accessed(pagetable_t pgtbl, uint64 va) {
   if((pte = walk(pgtbl, va, need_alloc)) == 0)
     return 0;
 
-  if((*pte & PTE_V) == 0)
-    return 0;
+  // if((*pte & PTE_V) == 0)
+  //   return 0;
   
   if((*pte & PTE_A) == 0) /* PTE_A is set by hardware */
   {
