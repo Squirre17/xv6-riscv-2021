@@ -485,7 +485,6 @@ void vmprint(pagetable_t pagetable, uint32 level) {/* pagetable 指向页表的�
 /// @return      : 1 if accessed else 0
 uint64 vmpg_is_accessed(pagetable_t pgtbl, uint64 va) {
   pte_t *pte; /* *pte = paddr */
-  uint64 pa;
 
   if(va > MAXVA)
     return 0;
