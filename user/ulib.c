@@ -1,6 +1,7 @@
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "kernel/fcntl.h"
+// #define LAB_PGTBL 
 #ifdef LAB_PGTBL
 #include "kernel/riscv.h"
 #include "kernel/memlayout.h"
@@ -141,11 +142,12 @@ memcpy(void *dst, const void *src, uint n)
   return memmove(dst, src, n);
 }
 
+// #define LAB_PGTBL 
 #ifdef LAB_PGTBL
 int
 ugetpid(void)
 {
-  struct usyscall *u = (struct usyscall *)USYSCALL;
+  struct usyscall *u = (struct usyscall *)USYSCALL;// (+) vaddr 
   return u->pid;
 }
 #endif

@@ -46,6 +46,8 @@
     "xutility": "cpp",
     "fstream": "cpp",
     "*.tcc": "cpp",
-    "out": "c"
+    "out": "c",
+    "user.h": "c",
+    "riscv.h": "c"
   }
 }

@@ -127,8 +127,17 @@ found:
     return 0;
   }
 
+  // (+) allocate an usyscall physical page
+  if((p->usyscall = (struct usyscall *)kalloc()) == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
+
+  p->usyscall->pid = p->pid;
+
   // An empty user page table.
-  p->pagetable = proc_pagetable(p);
+  p->pagetable = proc_pagetable(p);/* build mapping relationship */
   if(p->pagetable == 0){
     freeproc(p);
     release(&p->lock);
@@ -153,6 +162,12 @@ freeproc(struct proc *p)
   if(p->trapframe)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
+
+  // (+) free the usyscall page TODO: no necessary?
+  if(p->usyscall)
+    kfree((void*)p->usyscall);
+  p->usyscall = 0;
+  
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
@@ -169,7 +184,7 @@ freeproc(struct proc *p)
 // Create a user page table for a given process,
 // with no user memory, but with trampoline pages.
 pagetable_t
-proc_pagetable(struct proc *p)
+proc_pagetable(struct proc *p)/* call from allocproc */
 {
   pagetable_t pagetable;
 
@@ -196,6 +211,16 @@ proc_pagetable(struct proc *p)
     return 0;
   }
 
+  // (+) map the use usyscall just below the trapframe
+
+  if(mappages(pagetable, USYSCALL, PGSIZE,
+              (uint64)(p->usyscall), PTE_R | PTE_U) < 0){
+    uvmunmap(pagetable, USYSCALL, 1, 0);
+    uvmunmap(pagetable, TRAMPOLINE, 1, 0);
+    uvmfree(pagetable, 0);
+    return 0;
+  }
+
   return pagetable;
 }
 
@@ -204,9 +229,11 @@ proc_pagetable(struct proc *p)
 void
 proc_freepagetable(pagetable_t pagetable, uint64 sz)
 {
+  // todo: unmap usyscall 
   uvmunmap(pagetable, TRAMPOLINE, 1, 0);
   uvmunmap(pagetable, TRAPFRAME, 1, 0);
-  uvmfree(pagetable, sz);
+  uvmunmap(pagetable, USYSCALL, 1, 0); /* find corresponding paddr and free it */
+  uvmfree(pagetable, sz);/* (+) only free the page table */
 }
 
 // a user program that calls exec("/init")
