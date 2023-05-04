@@ -9,7 +9,7 @@
 #include "sysinfo.h"
 
 extern uint64 get_freemem();
-extern uint64 get_nproc(void);
+extern uint64 get_used_nproc(void);
 
 uint64
 sys_exit(void)
@@ -125,7 +125,7 @@ sys_sysinfo()
     uint64 user_addr;
 
     sinfo.freemem = get_freemem();
-    sinfo.nproc   = get_nproc();
+    sinfo.nproc   = get_used_nproc();
 
     if(argaddr(0, &user_addr) < 0)
         return -1;

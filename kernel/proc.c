@@ -659,8 +659,8 @@ procdump(void)
   }
 }
 
-/// get number of processor
-uint64 get_nproc(void)
+/// get number of NOT UNUSED processor
+uint64 get_used_nproc(void)
 {
     struct proc *p;
     uint64 counter = 0;
@@ -669,7 +669,7 @@ uint64 get_nproc(void)
 
         acquire(&p->lock);
 
-        if(p->state == UNUSED)
+        if(p->state != UNUSED)
             counter++;
 
         release(&p->lock);
