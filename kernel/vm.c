@@ -483,7 +483,7 @@ void vmprint(pagetable_t pagetable, uint32 level) {/* pagetable 指向页表的�
 /// @param pgtbl : page table
 /// @param va    : virtual address
 /// @return      : 1 if accessed else 0
-uint64 vmpg_is_access(pagetable_t pgtbl, uint64 va) {
+uint64 vmpg_is_accessed(pagetable_t pgtbl, uint64 va) {
   pte_t *pte; /* *pte = paddr */
   uint64 pa;
 

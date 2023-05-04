@@ -97,13 +97,18 @@ sys_pgaccess(void)
   if(len < 0 || len > 32)
     return -1;
 
-  uint64 bitmask;// TODO
+  uint64 bitmask = 0;
   struct proc *p = myproc();
+  
+  #define SET_IDX_IN_BITMASK(bm, idx) ((bm) | ( 1 << (idx)))
 
   for(uint32 i = 0; i < len; i++) {
+
     uint64 va = base + i * PGSIZE;
 
-
+    if(vmpg_is_accessed(p->pagetable, va))
+      SET_IDX_IN_BITMASK(bitmask, i);
+      
   }
 
   if(copyout(p->pagetable, mask, (char *)&bitmask, sizeof(bitmask)) < 0)
