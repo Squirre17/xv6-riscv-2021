@@ -141,10 +141,11 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
-  //(+) init new fields
+  //(+) init new fields 
   p->tickinfo.period   = 0;
   p->tickinfo.handler  = 0;
   p->tickinfo.interval = 0;
+  p->tickinfo.orgepc   = 0;
 
   return p;
 }

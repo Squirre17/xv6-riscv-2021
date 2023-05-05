@@ -29,10 +29,10 @@ trapinithart(void)
   w_stvec((uint64)kernelvec);
 }
 
-void store_tick_regs() {
+void store_tick_regs(struct proc *p) {
 
-  struct proc *p = myproc();
-  
+  p->tickinfo.orgepc = p->trapframe->epc;
+
   p->tickinfo.ra  = p->trapframe->ra;
   p->tickinfo.sp  = p->trapframe->sp;
   p->tickinfo.gp  = p->trapframe->gp;
@@ -116,11 +116,17 @@ usertrap(void)
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2){
 
-    if(p->tickinfo.interval > 0 && p->tickinfo.handler > 0) {
+    if(p->tickinfo.interval > 0) {
 
-      p->tickinfo.period++;
-      p->tickinfo.orgepc = p->trapframe->epc;
-      p->trapframe->epc = (uint64)p->tickinfo.handler;
+      p->tickinfo.period += 1;
+
+      if(p->tickinfo.period == p->tickinfo.interval) {
+        
+        p->tickinfo.period = 0;
+        store_tick_regs(p);
+        p->trapframe->epc = (uint64)p->tickinfo.handler;
+
+      }
       
     }
     
