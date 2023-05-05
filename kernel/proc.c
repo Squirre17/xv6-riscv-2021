@@ -142,9 +142,9 @@ found:
   p->context.sp = p->kstack + PGSIZE;
 
   //(+) init new fields
-  p->period   = 0;
-  p->handler  = 0;
-  p->interval = 0;
+  p->tickinfo.period   = 0;
+  p->tickinfo.handler  = 0;
+  p->tickinfo.interval = 0;
 
   return p;
 }

@@ -108,12 +108,47 @@ uint64 sys_sigalarm(void) {
     return -1;
 
   struct proc *p = myproc();
-  p->interval = interval;
-  p->handler  = handler;
-  p->period   = 0;
+  p->tickinfo.interval = interval;
+  p->tickinfo.handler  = handler;
+  p->tickinfo.period   = 0;
 
   return 0;
 }
+
 uint64 sys_sigreturn(void) {
-  
+  struct proc *p = myproc();
+  p->trapframe->epc = p->tickinfo.orgepc;
+
+  p->trapframe->ra  = p->tickinfo.ra ;
+  p->trapframe->sp  = p->tickinfo.sp ;
+  p->trapframe->gp  = p->tickinfo.gp ;
+  p->trapframe->tp  = p->tickinfo.tp ;
+  p->trapframe->t0  = p->tickinfo.t0 ;
+  p->trapframe->t1  = p->tickinfo.t1 ;
+  p->trapframe->t2  = p->tickinfo.t2 ;
+  p->trapframe->s0  = p->tickinfo.s0 ;
+  p->trapframe->s1  = p->tickinfo.s1 ;
+  p->trapframe->a0  = p->tickinfo.a0 ;
+  p->trapframe->a1  = p->tickinfo.a1 ;
+  p->trapframe->a2  = p->tickinfo.a2 ;
+  p->trapframe->a3  = p->tickinfo.a3 ;
+  p->trapframe->a4  = p->tickinfo.a4 ;
+  p->trapframe->a5  = p->tickinfo.a5 ;
+  p->trapframe->a6  = p->tickinfo.a6 ;
+  p->trapframe->a7  = p->tickinfo.a7 ;
+  p->trapframe->s2  = p->tickinfo.s2 ;
+  p->trapframe->s3  = p->tickinfo.s3 ;
+  p->trapframe->s4  = p->tickinfo.s4 ;
+  p->trapframe->s5  = p->tickinfo.s5 ;
+  p->trapframe->s6  = p->tickinfo.s6 ;
+  p->trapframe->s7  = p->tickinfo.s7 ;
+  p->trapframe->s8  = p->tickinfo.s8 ;
+  p->trapframe->s9  = p->tickinfo.s9 ;
+  p->trapframe->s10 = p->tickinfo.s10;
+  p->trapframe->s11 = p->tickinfo.s11;
+  p->trapframe->t3  = p->tickinfo.t3 ;
+  p->trapframe->t4  = p->tickinfo.t4 ;
+  p->trapframe->t5  = p->tickinfo.t5 ;
+  p->trapframe->t6  = p->tickinfo.t6 ;
+  return 0;
 }
