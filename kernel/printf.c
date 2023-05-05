@@ -122,6 +122,7 @@ panic(char *s)
   printf(s);
   printf("\n");
   panicked = 1; // freeze uart output from other CPUs
+  backtrace();
   for(;;)
     ;
 }
@@ -131,4 +132,36 @@ printfinit(void)
 {
   initlock(&pr.lock, "pr");
   pr.locking = 1;
+}
+
+/*
+(remote) gef➤  x/gx 0x3fffff9f80
+0x3fffff9f80:   0x0000003fffff9fc0
+(remote) gef➤  x/gx 0x3fffff9f80 - 8
+0x3fffff9f78:   0x000000008000214a
+(remote) gef➤  x/gx 0x3fffff9f80 - 16
+0x3fffff9f70:   0x0000003fffff9fc0
+
+
+
+····         ····
+0x3fffff9f80 0x0000003fffff9fc0 <- cur_fp
+0x3fffff9f78 0x000000008000214a <- ret
+0x3fffff9f70 0x0000003fffff9fc0 
+*/
+void backtrace(void) {
+
+  printf("backtrace:\n");
+
+  uint64 fp = r_fp();
+
+  uint64 page_up = PGROUNDUP(fp);  // high addr
+  uint64 page_dw = PGROUNDDOWN(fp);
+
+  while(fp < page_up && fp > page_dw) {
+
+    printf("%p\n", *(uint64 *)(fp - 0x8));
+    fp = *(uint64 *)(fp - 0x10);
+
+  }
 }

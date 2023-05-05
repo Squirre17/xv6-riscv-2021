@@ -1,0 +1,3 @@
+source ~/tools/gef/gef.py
+gef-remote --qemu-user --qemu-binary ./kernel/kernel localhost 26000
+
