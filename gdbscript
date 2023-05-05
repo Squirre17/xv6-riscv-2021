@@ -1,3 +1,4 @@
 source ~/tools/gef/gef.py
+set riscv use-compressed-breakpoints yes
 gef-remote --qemu-user --qemu-binary ./kernel/kernel localhost 26000
 
