@@ -110,4 +110,5 @@ struct proc {
   int interval;
   uint64 period;              // timer period 
   void (* handler)();
+  uint64 orgepc;              // orginal exception program counter
 };
